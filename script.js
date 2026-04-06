@@ -4,52 +4,52 @@ const opportunities = [
         title: "Feira de Oportunidades Jovem 2026",
         category: "eventos",
         tag: "EVENTO",
-        image: "https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+        image: "https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?auto=format&fit=crop&w=800&q=80",
         date: "Sábado, 11 de Abril de 2026",
         time: "10:00 - 18:00",
         location: "Parque da cidade, Salvador - BA",
-        description: "Você está convidado para uma oportunidade única 🚀. Participe de um evento tech pensado para conectar ideias, pessoas e o futuro. Será um momento para explorar tendências, trocar experiências e descobrir novas possibilidades no mundo da tecnologia. Se você é apaixonado por inovação ou quer dar o próximo passo na sua jornada digital, esse encontro é o lugar certo para estar. Não fique de fora — o futuro começa aqui.",
+        description: "Evento tech para conectar ideias e pessoas 🚀.",
         institution: "Prefeitura de Salvador",
-        instDesc: "Este evento está sendo ofertado pela Secretaria Municipal de Salvador, com o objetivo de incentivar a inovação."
+        instDesc: "Evento da Secretaria Municipal."
     },
     {
         id: 2,
         title: "Oportunidade de Carreira Jovem 2026",
         category: "vagas",
         tag: "VAGAS",
-        image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+        image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=800&q=80",
         date: "Quinta-feira, 16 de Abril de 2026",
         time: "09:00 - 17:00",
         location: "Parque da cidade, Salvador - BA",
-        description: "Uma oportunidade real de entrar no mercado e mostrar seu talento 💼. Aqui, você poderá se conectar com empresas, conhecer novas possibilidades e dar um passo importante na sua trajetória profissional. Se você quer crescer, aprender na prática e abrir portas para o futuro, este é o momento certo para agir. As melhores oportunidades começam com uma decisão — a sua pode ser hoje.",
+        description: "Entre no mercado de trabalho 💼.",
         institution: "Prefeitura de Salvador",
-        instDesc: "Iniciativa da Secretaria Municipal de Salvador para fortalecer a empregabilidade jovem."
+        instDesc: "Empregabilidade jovem."
     },
     {
         id: 3,
         title: "Workshop Jovem de Inovação",
-        category: "eventos",
+        category: "workshops", 
         tag: "WORKSHOP",
-        image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+        image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80",
         date: "Terça-feira, 21 de Abril de 2026",
         time: "14:00 - 18:00",
         location: "Parque da cidade, Salvador - BA",
-        description: "Participe de uma experiência prática e dinâmica, onde conhecimento e ação caminham juntos. Coloque a mão na massa e desenvolva novas habilidades ✨. Este workshop foi pensado para quem quer aprender de forma prática, explorar ideias e criar soluções inovadoras em um ambiente colaborativo. Uma experiência dinâmica, com troca de conhecimento e muita experimentação. Aprender nunca foi tão envolvente — venha viver isso de perto.",
+        description: "Aprendizado prático e inovação ✨.",
         institution: "Prefeitura de Salvador",
-        instDesc: "Ação da Secretaria Municipal de Salvador voltada ao estímulo da criatividade e inovação."
+        instDesc: "Foco em criatividade."
     },
     {
         id: 4,
         title: "Programa de Capacitação Jovem 2026",
         category: "cursos",
         tag: "CURSOS",
-        image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+        image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80",
         date: "Segunda-feira, 27 de Abril de 2026",
         time: "10:00 - 18:00",
         location: "Parque da cidade, Salvador - BA",
-        description: "Descubra novos conhecimentos e amplie suas possibilidades com um curso pensado para quem deseja evoluir e se destacar. Amplie seus horizontes com conhecimento que faz diferença 📚. Este curso oferece conteúdos atualizados para quem deseja se qualificar e acompanhar as transformações do mundo digital. Ideal para quem quer começar algo novo ou se destacar ainda mais na sua área. Invista em você — o aprendizado é o primeiro passo para grandes conquistas.",
+        description: "Curso para evolução profissional 📚.",
         institution: "Prefeitura de Salvador",
-        instDesc: "Programa da Secretaria Municipal de Salvador focado na educação e qualificação profissional."
+        instDesc: "Qualificação profissional."
     }
 ];
 
@@ -87,15 +87,15 @@ function renderHome() {
 
     const filters = document.querySelectorAll('.filter-chip');
     filters.forEach(chip => {
-        chip.addEventListener('click', (e) => {
+        chip.addEventListener('click', () => {
             filters.forEach(c => c.classList.remove('active'));
             chip.classList.add('active');
             currentFilter = chip.dataset.filter;
-            
-            const filtered = currentFilter === 'todas' 
-                ? opportunities 
+
+            const filtered = currentFilter === 'todas'
+                ? opportunities
                 : opportunities.filter(o => o.category === currentFilter);
-            
+
             renderCards(filtered, listContainer);
         });
     });
@@ -103,6 +103,12 @@ function renderHome() {
 
 function renderCards(data, container) {
     container.innerHTML = '';
+
+    if (data.length === 0) {
+        container.innerHTML = "<p>Nenhuma oportunidade encontrada 😢</p>";
+        return;
+    }
+
     data.forEach(item => {
         const card = document.createElement('div');
         card.className = 'opportunity-card';
@@ -115,8 +121,8 @@ function renderCards(data, container) {
                 <h4>${item.title}</h4>
                 <p>${item.description.substring(0, 100)}...</p>
                 <div class="card-footer">
-                    <div class="footer-item"><span>📅</span> ${item.date.split(',')[1].trim()}</div>
-                    <div class="footer-item"><span>📍</span> Salvador - BA</div>
+                    <div class="footer-item">📅 ${item.date.split(',')[1].trim()}</div>
+                    <div class="footer-item">📍 Salvador - BA</div>
                 </div>
             </div>
         `;
@@ -142,9 +148,7 @@ function renderDetails(item) {
     document.getElementById('details-inst-name').innerText = item.institution;
     document.getElementById('details-inst-desc').innerText = item.instDesc;
 
-    document.getElementById('back-btn').addEventListener('click', () => {
-        renderHome();
-    });
+    document.getElementById('back-btn').addEventListener('click', renderHome);
 
     document.getElementById('enroll-btn').addEventListener('click', () => {
         alert('Inscrição realizada com sucesso! 🎉');
@@ -161,7 +165,7 @@ function renderProfile() {
     renderCards([opportunities[2]], savedList);
 
     document.querySelector('.btn-logout').addEventListener('click', () => {
-        alert('Saindo da conta...');
+        alert('Saindo...');
         location.reload();
     });
 }
