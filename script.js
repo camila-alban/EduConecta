@@ -78,23 +78,30 @@ function setupHeaderActions() {
 
 function renderHome() {
     currentView = 'home';
-    const clone = homeTemplate.content.cloneNode(true);
+
     appContent.innerHTML = '';
+    const clone = homeTemplate.content.cloneNode(true);
     appContent.appendChild(clone);
 
     const listContainer = document.getElementById('opportunities-list');
     renderCards(opportunities, listContainer);
 
-    const filters = document.querySelectorAll('.filter-chip');
+    const filters = appContent.querySelectorAll('.filter-chip');
+
     filters.forEach(chip => {
         chip.addEventListener('click', () => {
             filters.forEach(c => c.classList.remove('active'));
             chip.classList.add('active');
-            currentFilter = chip.dataset.filter;
 
-            const filtered = currentFilter === 'todas'
-                ? opportunities
-                : opportunities.filter(o => o.category === currentFilter);
+            const filter = chip.getAttribute('data-filter');
+
+            let filtered;
+
+            if (filter === 'todas') {
+                filtered = opportunities;
+            } else {
+                filtered = opportunities.filter(item => item.category === filter);
+            }
 
             renderCards(filtered, listContainer);
         });
