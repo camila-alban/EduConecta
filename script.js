@@ -15,7 +15,7 @@ const opportunities = [
         time: "Duração: 40h",
         location: "Online",
         description: "Aprenda os fundamentos do design de experiência do usuário e interface com os melhores profissionais do Google. Domine Figma, heurísticas de Nielsen e design acessível.",
-        image: "https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?w=400&q=80",
+        image: "https://images.unsplash.com/photo-1581291518062-c9a79e7e0f34?w=400&q=80",
         saved: false
     },
     {
