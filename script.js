@@ -5,20 +5,6 @@
 // --- Data Model ---
 const opportunities = [
     {
-        id: 1,
-        title: "UX/UI Design Masterclass",
-        type: "cursos",
-        category: "Cursos",
-        institution: "Google Design",
-        instDesc: "Líder global em design de produtos digitais.",
-        date: "Início imediato",
-        time: "Duração: 40h",
-        location: "Online",
-        description: "Aprenda os fundamentos do design de experiência do usuário e interface com os melhores profissionais do Google. Domine Figma, heurísticas de Nielsen e design acessível.",
-        image: "https://images.unsplash.com/photo-1581291518062-c9a79e7e0f34?w=400&q=80",
-        saved: false
-    },
-    {
         id: 2,
         title: "Summit IA Generativa 2026",
         type: "eventos",
