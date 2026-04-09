@@ -1,287 +1,372 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- Configuration & Elements ---
-    const content = document.getElementById('content');
-    const homeTemplate = document.getElementById('home-template');
-    const savedTemplate = document.getElementById('saved-template');
-    const profileTemplate = document.getElementById('profile-template');
-    const detailView = document.getElementById('detail-view');
-    const detailContent = document.getElementById('detail-content');
-    const detailPageTemplate = document.getElementById('detail-page-template');
-    
-    const searchBar = document.getElementById('search-bar');
-    const searchInput = document.getElementById('search-input');
-    const searchTrigger = document.getElementById('search-trigger');
-    const searchClose = document.getElementById('search-close');
-    const tabItems = document.querySelectorAll('.tab-item');
-    const navIndicator = document.querySelector('.nav-indicator');
+/**
+ * EduConecta - Premium Learning Application Logic
+ */
 
-    // --- State Management ---
-    const opportunities = [
-        {
-            id: 1,
-            title: "Introdução ao React & Next.js",
-            type: "cursos",
-            tag: "🎓 Curso",
-            date: "15 Abr, 2026",
-            time: "19:00 - 21:00",
-            location: "Online via Zoom",
-            image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&auto=format&fit=crop&q=60",
-            description: "Aprenda as bases do desenvolvimento web moderno com as tecnologias mais requisitadas do mercado. Este curso abrange desde o básico do React até as novas funcionalidades do Next.js.",
-            institution: "Tech Academy Brasil",
-            instDesc: "Uma instituição dedicada a formar novos talentos na área de tecnologia com cursos práticos e gratuitos."
-        },
-        {
-            id: 3,
-            title: "Desenvolvedor Front-end Júnior",
-            type: "vagas",
-            tag: "💼 Vaga",
-            date: "Até 30 Abr",
-            time: "Horário Comercial",
-            location: "Remoto ou Híbrido (SP)",
-            image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=60",
-            description: "Estamos em busca de novos talentos para integrar nosso time de desenvolvimento. Se você tem paixão por código e quer aprender, essa vaga é para você!",
-            institution: "Inova Soft",
-            instDesc: "Startup em rápido crescimento no setor de fintechs, buscando inovação constante."
-        },
-        {
-            id: 4,
-            title: "Feira de Profissões 2026",
-            type: "eventos",
-            tag: "📅 Evento",
-            date: "05 Mai, 2026",
-            time: "09:00 - 17:00",
-            location: "Centro de Convenções",
-            image: "https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?w=800&auto=format&fit=crop&q=60",
-            description: "Conheça diversas áreas de atuação, converse com profissionais experientes e descubra qual carreira mais combina com você.",
-            institution: "Educação Para Todos",
-            instDesc: "ONG focada em orientação vocacional e democratização do acesso à educação de qualidade."
-        },
-        {
-            id: 5,
-            title: "Curso de Inglês para Negócios",
-            type: "cursos",
-            tag: "🎓 Curso",
-            date: "Ter e Qui",
-            time: "18:30 - 20:00",
-            location: "Escola Global",
-            image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&auto=format&fit=crop&q=60",
-            description: "Aprimore seu vocabulário profissional e ganhe confiança para reuniões e apresentações internacionais.",
-            institution: "Global Languages",
-            instDesc: "Especialistas em ensino de idiomas para fins profissionais com metodologia acelerada."
-        },
-        {
-            id: 6,
-            title: "Workshop de Python para Dados",
-            type: "workshops",
-            tag: "🔧 Workshop",
-            date: "12 Jun, 2026",
-            time: "09:00 - 13:00",
-            location: "Lab de Inovação",
-            image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=60",
-            description: "Inicie sua jornada em Data Science aprendendo as bibliotecas essenciais do Python.",
-            institution: "Data Masters",
-            instDesc: "Escola focada em inteligência de dados e análise preditiva."
-        }
-    ];
-
-    let currentView = 'home';
-    let currentFilter = 'todas';
-    let savedIds = JSON.parse(localStorage.getItem('educonecta_saved')) || [];
-
-    // --- Core Functions ---
-
-    function updateNavIndicator() {
-        const activeTab = document.querySelector('.tab-item.active');
-        if (activeTab && navIndicator) {
-            const rect = activeTab.getBoundingClientRect();
-            const parentRect = activeTab.parentElement.getBoundingClientRect();
-            navIndicator.style.width = `${rect.width * 0.4}px`;
-            navIndicator.style.left = `${rect.left - parentRect.left + (rect.width * 0.3)}px`;
-        }
+// --- Data Model ---
+const opportunities = [
+    {
+        id: 1,
+        title: "UX/UI Design Masterclass",
+        type: "cursos",
+        category: "Cursos",
+        institution: "Google Design",
+        instDesc: "Líder global em design de produtos digitais.",
+        date: "Início imediato",
+        time: "Duração: 40h",
+        location: "Online",
+        description: "Aprenda os fundamentos do design de experiência do usuário e interface com os melhores profissionais do Google. Domine Figma, heurísticas de Nielsen e design acessível.",
+        image: "https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?w=400&q=80",
+        saved: false
+    },
+    {
+        id: 2,
+        title: "Summit IA Generativa 2026",
+        type: "eventos",
+        category: "Eventos",
+        institution: "TechHub SP",
+        instDesc: "O maior ecossistema de inovação da América Latina.",
+        date: "15 de Maio, 2026",
+        time: "09:00 - 18:00",
+        location: "São Paulo, SP",
+        description: "O maior encontro sobre Inteligência Artificial Generativa. Palestras com especialistas mundiais e networking de alto nível.",
+        image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&q=80",
+        saved: false
+    },
+    {
+        id: 3,
+        title: "Desenvolvedor Frontend Sênior",
+        type: "vagas",
+        category: "Vagas",
+        institution: "Nubank",
+        instDesc: "Revolucionando o sistema financeiro com tecnologia.",
+        date: "Publicada há 2 dias",
+        time: "Full-time / Remoto",
+        location: "Brasil",
+        description: "Buscamos talentos apaixonados por React e Typescript para construir a próxima geração de serviços financeiros digitais.",
+        image: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&q=80",
+        saved: false
+    },
+    {
+        id: 4,
+        title: "Workshop: Liderança Ágil",
+        type: "workshops",
+        category: "Workshops",
+        institution: "FGV",
+        instDesc: "Instituição de excelência em gestão e economia.",
+        date: "22 de Abril, 2026",
+        time: "19:00 - 22:00",
+        location: "Online",
+        description: "Desenvolva habilidades de liderança em ambientes de alta incerteza. Foco em frameworks ágeis e gestão de times remotos.",
+        image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&q=80",
+        saved: false
+    },
+    {
+        id: 5,
+        title: "Data Science para Negócios",
+        type: "cursos",
+        category: "Cursos",
+        institution: "Udacity",
+        instDesc: "A universidade do futuro, focada em tech.",
+        date: "Flexível",
+        time: "Duração: 60h",
+        location: "Online",
+        description: "Transforme dados em decisões estratégicas. Aprenda Python, SQL e técnicas de visualização de dados aplicadas ao business.",
+        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80",
+        saved: false
+    },
+    {
+        id: 6,
+        title: "Hackathon Sustentabilidade",
+        type: "eventos",
+        category: "Eventos",
+        institution: "GreenTech",
+        instDesc: "Focada em soluções tecnológicas para o planeta.",
+        date: "05 de Junho, 2026",
+        time: "48 horas seguidas",
+        location: "Florianópolis, SC",
+        description: "Crie soluções para os maiores desafios ambientais do nosso tempo. Prêmios em dinheiro e aceleração para os melhores projetos.",
+        image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&q=80",
+        saved: false
     }
+];
 
-    function switchView(viewName) {
-        currentView = viewName;
-        content.innerHTML = '';
-        
-        tabItems.forEach(item => {
-            item.classList.toggle('active', item.dataset.view === viewName);
+// --- State Management ---
+let currentView = 'home';
+let currentFilter = 'todas';
+let searchQuery = '';
+let savedIds = JSON.parse(localStorage.getItem('educonecta_saved')) || [];
+
+// --- Selectors ---
+const appContent = document.getElementById('content');
+const tabButtons = document.querySelectorAll('.tab-item');
+const navIndicator = document.querySelector('.nav-indicator');
+const searchTrigger = document.getElementById('search-trigger');
+const searchBar = document.getElementById('search-bar');
+const searchClose = document.getElementById('search-close');
+const searchInput = document.getElementById('search-input');
+const detailOverlay = document.getElementById('detail-view');
+
+// --- Initialization ---
+function init() {
+    renderView('home');
+    setupNavigation();
+    setupSearch();
+    updateSavedCount();
+}
+
+// --- Navigation Logic ---
+function setupNavigation() {
+    tabButtons.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+            const view = btn.dataset.view;
+            if (view === currentView) return;
+
+            // Update UI
+            tabButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Move Indicator
+            navIndicator.style.transform = `translateX(${index * 100}%)`;
+
+            // Switch View
+            currentView = view;
+            renderView(view);
         });
-        updateNavIndicator();
+    });
+}
 
-        let clone;
-        if (viewName === 'home') {
-            clone = homeTemplate.content.cloneNode(true);
-            content.appendChild(clone);
-            setupHomeView();
-        } else if (viewName === 'saved') {
-            clone = savedTemplate.content.cloneNode(true);
-            content.appendChild(clone);
-            renderSavedList();
-        } else if (viewName === 'profile') {
-            clone = profileTemplate.content.cloneNode(true);
-            content.appendChild(clone);
-            setupProfileView();
-        }
+function renderView(viewName) {
+    const template = document.getElementById(`${viewName}-template`);
+    if (!template) return;
+
+    appContent.innerHTML = '';
+    const clone = template.content.cloneNode(true);
+    appContent.appendChild(clone);
+
+    // View-specific setup
+    if (viewName === 'home') {
+        setupHomeView();
+    } else if (viewName === 'saved') {
+        setupSavedView();
+    } else if (viewName === 'profile') {
+        setupProfileView();
     }
+}
 
-    function setupHomeView() {
-        // Filter Chips Logic
-        const chips = document.querySelectorAll('.cat-chip');
-        chips.forEach(chip => {
-            chip.classList.toggle('active', chip.dataset.filter === currentFilter);
-            chip.addEventListener('click', () => {
-                chips.forEach(c => c.classList.remove('active'));
-                chip.classList.add('active');
-                currentFilter = chip.dataset.filter;
-                renderOpportunitiesList();
-            });
+// --- Home View Logic ---
+function setupHomeView() {
+    const filterButtons = document.querySelectorAll('.cat-chip');
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.filter;
+            renderOpportunities();
         });
-        renderOpportunitiesList();
-    }
+    });
 
-    function renderOpportunitiesList(filteredItems = null) {
-        const list = document.getElementById('opportunities-list');
-        if (!list) return;
+    renderOpportunities();
+}
 
-        list.innerHTML = '';
-        const items = filteredItems || (currentFilter === 'todas' 
-            ? opportunities 
-            : opportunities.filter(o => o.type === currentFilter));
+function renderOpportunities() {
+    const list = document.getElementById('opportunities-list');
+    if (!list) return;
 
-        if (items.length === 0) {
-            list.innerHTML = `<div class="empty-state">Nenhum resultado encontrado.</div>`;
-            return;
-        }
+    let filtered = opportunities.filter(item => {
+        const matchesFilter = currentFilter === 'todas' || item.type === currentFilter;
+        const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            item.institution.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesFilter && matchesSearch;
+    });
 
-        items.forEach((opp, index) => {
-            const card = createCard(opp);
-            card.style.animationDelay = `${index * 0.1}s`;
-            list.appendChild(card);
-        });
-    }
+    // Update Hero Count if in home
+    const heroCount = document.getElementById('hero-count');
+    if (heroCount) heroCount.textContent = `${filtered.length} novas`;
 
-    function renderSavedList() {
-        const list = document.getElementById('saved-list');
-        if (!list) return;
+    list.innerHTML = filtered.length ? '' : '<p class="empty-msg">Nenhuma oportunidade encontrada.</p>';
 
-        const savedItems = opportunities.filter(o => savedIds.includes(o.id));
-        if (savedItems.length === 0) {
-            list.innerHTML = `<div class="empty-state">Você ainda não salvou nada.</div>`;
-            return;
-        }
-
-        savedItems.forEach(opp => list.appendChild(createCard(opp)));
-    }
-
-    function createCard(opp) {
+    filtered.forEach(item => {
+        const isSaved = savedIds.includes(item.id);
         const card = document.createElement('div');
-        card.className = 'card';
+        card.className = 'opportunity-card';
         card.innerHTML = `
-            <div class="card-img-wrap">
-                <img src="${opp.image}" alt="${opp.title}" loading="lazy">
-                <div class="card-badge">${opp.tag}</div>
+            <div class="card-img-wrapper">
+                <img src="${item.image}" alt="${item.title}" loading="lazy">
+                <div class="card-tag">${item.category}</div>
+                <button class="card-save-btn ${isSaved ? 'saved' : ''}" data-id="${item.id}">
+                    ${isSaved ? '🔖' : '🔖'}
+                </button>
             </div>
             <div class="card-body">
-                <h4>${opp.title}</h4>
-                <div class="card-meta">
-                    <span>📅 ${opp.date} • ${opp.time}</span>
-                    <span>📍 ${opp.location}</span>
+                <h4>${item.title}</h4>
+                <div class="card-footer">
+                    <span class="inst-name">${item.institution}</span>
+                    <span>${item.date}</span>
                 </div>
             </div>
         `;
-        card.addEventListener('click', () => openDetail(opp));
-        return card;
-    }
 
-    function openDetail(opp) {
-        detailContent.innerHTML = '';
-        const clone = detailPageTemplate.content.cloneNode(true);
-        
-        clone.querySelector('#d-image').src = opp.image;
-        clone.querySelector('#d-title').textContent = opp.title;
-        clone.querySelector('#d-tag').textContent = opp.tag;
-        clone.querySelector('#d-date').textContent = opp.date;
-        clone.querySelector('#d-time').textContent = opp.time;
-        clone.querySelector('#d-location').textContent = opp.location;
-        clone.querySelector('#d-desc').textContent = opp.description;
-        clone.querySelector('#d-inst-name').textContent = opp.institution;
-        clone.querySelector('#d-inst-desc').textContent = opp.instDesc;
-
-        const backBtn = clone.querySelector('.detail-back-btn');
-        backBtn.addEventListener('click', () => detailView.classList.remove('active'));
-
-        const saveBtn = clone.querySelector('#d-save-btn');
-        const updateSaveUI = () => {
-            const isSaved = savedIds.includes(opp.id);
-            saveBtn.textContent = isSaved ? 'Remover' : 'Salvar';
-            saveBtn.style.background = isSaved ? '#f1f5f9' : 'white';
-        };
-        updateSaveUI();
-
-        saveBtn.addEventListener('click', () => {
-            if (savedIds.includes(opp.id)) {
-                savedIds = savedIds.filter(id => id !== opp.id);
-            } else {
-                savedIds.push(opp.id);
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.card-save-btn')) {
+                toggleSave(item.id);
+                renderOpportunities(); // Refresh list to show saved state
+                return;
             }
-            localStorage.setItem('educonecta_saved', JSON.stringify(savedIds));
-            updateSaveUI();
+            openDetail(item);
         });
 
-        const enrollBtn = clone.querySelector('#d-enroll-btn');
-        enrollBtn.addEventListener('click', () => {
-            enrollBtn.textContent = 'Inscrito com Sucesso! ✅';
-            enrollBtn.style.background = '#10b981';
-            enrollBtn.disabled = true;
-            setTimeout(() => alert('Parabéns! Sua inscrição foi enviada para ' + opp.institution), 500);
+        list.appendChild(card);
+    });
+}
+
+// --- Saved View Logic ---
+function setupSavedView() {
+    const savedList = document.getElementById('saved-list');
+    if (!savedList) return;
+
+    const savedOpportunities = opportunities.filter(item => savedIds.includes(item.id));
+    
+    savedList.innerHTML = savedOpportunities.length ? '' : `
+        <div class="empty-state">
+            <span class="empty-icon">🔖</span>
+            <p>Você ainda não salvou nada.</p>
+        </div>
+    `;
+
+    savedOpportunities.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'opportunity-card';
+        card.innerHTML = `
+            <div class="card-img-wrapper">
+                <img src="${item.image}" alt="${item.title}">
+                <div class="card-tag">${item.category}</div>
+                <button class="card-save-btn saved" data-id="${item.id}">🔖</button>
+            </div>
+            <div class="card-body">
+                <h4>${item.title}</h4>
+                <div class="card-footer">
+                    <span class="inst-name">${item.institution}</span>
+                    <span>${item.date}</span>
+                </div>
+            </div>
+        `;
+
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.card-save-btn')) {
+                toggleSave(item.id);
+                setupSavedView(); // Refresh saved list
+                return;
+            }
+            openDetail(item);
         });
 
-        detailContent.appendChild(clone);
-        detailView.classList.add('active');
-    }
+        savedList.appendChild(card);
+    });
+}
 
-    function setupProfileView() {
-        document.getElementById('profile-saved-count').textContent = savedIds.length;
-        document.querySelector('.logout-btn').addEventListener('click', () => {
-            if(confirm('Deseja realmente sair?')) location.reload();
+// --- Profile View Logic ---
+function setupProfileView() {
+    const savedCount = document.getElementById('profile-saved-count');
+    if (savedCount) savedCount.textContent = savedIds.length;
+
+    const logoutBtn = document.querySelector('.logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            alert('Funcionalidade de Logout (Simulação)');
         });
     }
+}
 
-    // --- Search Logic ---
+// --- Detail View Logic ---
+function openDetail(item) {
+    const template = document.getElementById('detail-page-template');
+    const content = document.getElementById('detail-content');
+    
+    content.innerHTML = '';
+    const clone = template.content.cloneNode(true);
+    content.appendChild(clone);
 
-    function toggleSearch() {
-        searchBar.classList.toggle('active');
-        if (searchBar.classList.contains('active')) {
-            searchInput.focus();
-        }
-    }
+    // Populate data
+    document.getElementById('d-image').src = item.image;
+    document.getElementById('d-title').textContent = item.title;
+    document.getElementById('d-tag').textContent = item.category;
+    document.getElementById('d-date').textContent = item.date;
+    document.getElementById('d-time').textContent = item.time;
+    document.getElementById('d-location').textContent = item.location;
+    document.getElementById('d-desc').textContent = item.description;
+    document.getElementById('d-inst-name').textContent = item.institution;
+    document.getElementById('d-inst-desc').textContent = item.instDesc;
+
+    const saveBtn = document.getElementById('d-save-btn');
+    const isSaved = savedIds.includes(item.id);
+    updateDetailSaveBtn(saveBtn, isSaved);
+
+    saveBtn.addEventListener('click', () => {
+        const newState = toggleSave(item.id);
+        updateDetailSaveBtn(saveBtn, newState);
+        // If we are in Saved view, we might want to refresh it when overlay closes
+    });
+
+    document.getElementById('d-close-btn').addEventListener('click', closeDetail);
+    document.getElementById('d-enroll-btn').addEventListener('click', () => {
+        alert(`Inscrição solicitada para: ${item.title}`);
+    });
+
+    detailOverlay.classList.add('active');
+}
+
+function closeDetail() {
+    detailOverlay.classList.remove('active');
+    // Refresh current view in case something changed (like saved state)
+    renderView(currentView);
+}
+
+function updateDetailSaveBtn(btn, isSaved) {
+    btn.textContent = isSaved ? 'Salvo' : 'Salvar';
+    btn.classList.toggle('saved', isSaved);
+}
+
+// --- Search Logic ---
+function setupSearch() {
+    searchTrigger.addEventListener('click', () => {
+        searchBar.classList.add('active');
+        searchInput.focus();
+    });
+
+    searchClose.addEventListener('click', () => {
+        searchBar.classList.remove('active');
+        searchInput.value = '';
+        searchQuery = '';
+        if (currentView === 'home') renderOpportunities();
+    });
 
     searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        if (currentView !== 'home') switchView('home');
-        
-        const filtered = opportunities.filter(o => 
-            o.title.toLowerCase().includes(query) || 
-            o.description.toLowerCase().includes(query)
-        );
-        renderOpportunitiesList(filtered);
+        searchQuery = e.target.value;
+        if (currentView === 'home') renderOpportunities();
     });
+}
 
-    // --- Event Listeners ---
+// --- Helper Functions ---
+function toggleSave(id) {
+    const index = savedIds.indexOf(id);
+    let isSavedNow = false;
+    
+    if (index === -1) {
+        savedIds.push(id);
+        isSavedNow = true;
+    } else {
+        savedIds.splice(index, 1);
+        isSavedNow = false;
+    }
 
-    searchTrigger.addEventListener('click', toggleSearch);
-    searchClose.addEventListener('click', () => {
-        toggleSearch();
-        searchInput.value = '';
-        renderOpportunitiesList();
-    });
+    localStorage.setItem('educonecta_saved', JSON.stringify(savedIds));
+    updateSavedCount();
+    return isSavedNow;
+}
 
-    tabItems.forEach(tab => {
-        tab.addEventListener('click', () => switchView(tab.dataset.view));
-    });
+function updateSavedCount() {
+    // This could be used for global badges if needed
+}
 
-    // Initial load
-    switchView('home');
-    window.addEventListener('resize', updateNavIndicator);
-});
+// Start the app
+init();
