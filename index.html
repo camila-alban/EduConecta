@@ -11,7 +11,6 @@
  </head> 
  <body> 
      <div id="app"> 
-         <!-- Header --> 
          <header class="app-header"> 
              <div class="header-content"> 
                 <div class="brand-logo"> 
@@ -30,7 +29,6 @@
                      </div> 
                  </div> 
              </div> 
-             <!-- Dynamic Search Bar (Hidden by default) --> 
              <div id="search-bar" class="search-bar"> 
                  <div class="search-inner">
                      <span class="search-icon">🔍</span>
@@ -39,12 +37,9 @@
                  </div>
              </div> 
          </header> 
- 
-         <!-- Main Content Area --> 
          <main id="content" class="app-content"> 
          </main> 
- 
-         <!-- Bottom Tab Navigation --> 
+      
          <nav class="tab-nav"> 
              <button class="tab-item active" data-view="home"> 
                  <div class="tab-icon">🏠</div> 
@@ -60,8 +55,7 @@
              </button> 
              <div class="nav-indicator"></div> 
          </nav> 
- 
-         <!-- Home Template --> 
+
          <template id="home-template"> 
              <div class="view view-home"> 
                  <section class="hero-section"> 
@@ -92,7 +86,6 @@
              </div> 
          </template> 
   
-         <!-- Saved Template --> 
          <template id="saved-template"> 
              <div class="view view-saved"> 
                  <header class="view-header"> 
@@ -104,7 +97,6 @@
              </div> 
          </template> 
  
-         <!-- Profile Template --> 
          <template id="profile-template"> 
              <div class="view view-profile"> 
                  <div class="profile-hero"> 
@@ -153,13 +145,11 @@
                  <button class="logout-btn">Sair da Conta</button> 
              </div> 
          </template> 
- 
-         <!-- Fullscreen Detail View Container (Hidden initially) --> 
+      
          <div id="detail-view" class="detail-overlay"> 
              <div id="detail-content"></div> 
          </div> 
  
-         <!-- Detail Page Template --> 
          <template id="detail-page-template"> 
              <div class="detail-page"> 
                  <div class="detail-header-img"> 
