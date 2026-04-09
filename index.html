@@ -1,202 +1,210 @@
 <!DOCTYPE html> 
-<html lang="pt-br"> 
-<head> 
-    <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
-    <title>EduConecta - Premium Learning</title> 
-    <link rel="stylesheet" href="style.css"> 
-    <link rel="preconnect" href="https://fonts.googleapis.com"> 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"> 
-</head> 
-<body> 
-    <div id="app"> 
-        <!-- Header -->
-        <header class="app-header"> 
-            <div class="header-content">
-               <div class="brand-logo">
-                 <img src="img/54e17310-850b-4025-900e-7033d93b2814.png" alt="Logo EduConecta">
-                    <h1>EduConecta</h1> 
-                </div> 
-                <div class="header-actions">
-                    <button id="search-trigger" class="action-btn">
-                        <span class="icon">🔍</span>
-                    </button>
-                    <div class="notification-badge">
-                        <button class="action-btn">
-                            <span class="icon">🔔</span>
-                        </button>
-                        <span class="dot"></span>
-                    </div>
-                </div>
-            </div>
-            <!-- Dynamic Search Bar (Hidden by default) -->
-            <div id="search-bar" class="search-bar">
-                <input type="text" id="search-input" placeholder="O que você quer aprender hoje?">
-                <button id="search-close" class="close-btn">✕</button>
-            </div>
-        </header> 
-
-        <!-- Main Content Area -->
-        <main id="content" class="app-content"> 
-        </main> 
-
-        <!-- Bottom Tab Navigation -->
-        <nav class="tab-nav">
-            <button class="tab-item active" data-view="home">
-                <div class="tab-icon">🏠</div>
-                <span class="tab-label">Home</span>
-            </button>
-            <button class="tab-item" data-view="saved">
-                <div class="tab-icon">🔖</div>
-                <span class="tab-label">Salvos</span>
-            </button>
-            <button class="tab-item" data-view="profile">
-                <div class="tab-icon">👤</div>
-                <span class="tab-label">Perfil</span>
-            </button>
-            <div class="nav-indicator"></div>
-        </nav>
-
-        <!-- Home Template -->
-        <template id="home-template"> 
-            <div class="view view-home"> 
-                <section class="hero-section"> 
-                    <div class="hero-card">
-                        <div class="hero-info">
-                            <h2>Olá, Futuro! 👋</h2> 
-                            <p>Encontramos <strong>12 novas</strong> oportunidades para você hoje.</p> 
-                        </div>
-                        <div class="hero-image">✨</div>
-                    </div>
-                </section> 
+ <html lang="pt-br"> 
+ <head> 
+     <meta charset="UTF-8"> 
+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+     <title>EduConecta - Premium Learning</title> 
+     <link rel="stylesheet" href="style.css"> 
+     <link rel="preconnect" href="https://fonts.googleapis.com"> 
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"> 
+ </head> 
+ <body> 
+     <div id="app"> 
+         <!-- Header --> 
+         <header class="app-header"> 
+             <div class="header-content"> 
+                <div class="brand-logo"> 
+                  <img src="img/54e17310-850b-4025-900e-7033d93b2814.png" alt="Logo EduConecta" onerror="this.src='https://placehold.co/40x40/4f46e5/white?text=E'"> 
+                     <h1>EduConecta</h1> 
+                 </div> 
+                 <div class="header-actions"> 
+                     <button id="search-trigger" class="action-btn" aria-label="Pesquisar"> 
+                         <span class="icon">🔍</span> 
+                     </button> 
+                     <div class="notification-badge"> 
+                         <button class="action-btn" aria-label="Notificações"> 
+                             <span class="icon">🔔</span> 
+                         </button> 
+                         <span class="dot"></span> 
+                     </div> 
+                 </div> 
+             </div> 
+             <!-- Dynamic Search Bar (Hidden by default) --> 
+             <div id="search-bar" class="search-bar"> 
+                 <div class="search-inner">
+                     <span class="search-icon">🔍</span>
+                     <input type="text" id="search-input" placeholder="O que você quer aprender hoje?"> 
+                     <button id="search-close" class="close-btn">✕</button> 
+                 </div>
+             </div> 
+         </header> 
  
-                <nav class="category-filters"> 
-                    <button class="cat-chip active" data-filter="todas">Tudo</button> 
-                    <button class="cat-chip" data-filter="cursos">Cursos</button> 
-                    <button class="cat-chip" data-filter="eventos">Eventos</button> 
-                    <button class="cat-chip" data-filter="vagas">Vagas</button> 
-                    <button class="cat-chip" data-filter="workshops">Workshops</button> 
-                </nav> 
+         <!-- Main Content Area --> 
+         <main id="content" class="app-content"> 
+         </main> 
  
-                <div class="section-title">
-                    <h3>Explorar Oportunidades</h3>
-                    <span class="view-all">Ver todas</span>
-                </div>
-
-                <section class="opportunities-grid" id="opportunities-list"> 
-                </section> 
-            </div> 
-        </template> 
+         <!-- Bottom Tab Navigation --> 
+         <nav class="tab-nav"> 
+             <button class="tab-item active" data-view="home"> 
+                 <div class="tab-icon">🏠</div> 
+                 <span class="tab-label">Home</span> 
+             </button> 
+             <button class="tab-item" data-view="saved"> 
+                 <div class="tab-icon">🔖</div> 
+                 <span class="tab-label">Salvos</span> 
+             </button> 
+             <button class="tab-item" data-view="profile"> 
+                 <div class="tab-icon">👤</div> 
+                 <span class="tab-label">Perfil</span> 
+             </button> 
+             <div class="nav-indicator"></div> 
+         </nav> 
  
-        <!-- Saved Template -->
-        <template id="saved-template">
-            <div class="view view-saved">
-                <header class="view-header">
-                    <h2>Meus Itens Salvos</h2>
-                    <p>Continue de onde você parou</p>
-                </header>
-                <section id="saved-list" class="opportunities-grid">
-                </section>
-            </div>
-        </template>
-
-        <!-- Profile Template -->
-        <template id="profile-template"> 
-            <div class="view view-profile"> 
-                <div class="profile-hero">
-                    <div class="profile-avatar-wrapper">
-                        <div class="avatar-gradient"></div>
-                        <div class="avatar-content">👤</div>
-                    </div>
-                    <h2>Seu Nome</h2> 
-                    <p>Estudante de Tecnologia</p> 
-                    <div class="profile-stats">
-                        <div class="stat-item">
-                            <span class="stat-value">5</span>
-                            <span class="stat-label">Inscritos</span>
-                        </div>
-                        <div class="stat-divider"></div>
-                        <div class="stat-item">
-                            <span class="stat-value" id="profile-saved-count">0</span>
-                            <span class="stat-label">Salvos</span>
-                        </div>
-                    </div>
-                </div>
+         <!-- Home Template --> 
+         <template id="home-template"> 
+             <div class="view view-home"> 
+                 <section class="hero-section"> 
+                     <div class="hero-card"> 
+                         <div class="hero-info"> 
+                             <h2>Olá, Futuro! 👋</h2> 
+                             <p>Encontramos <strong id="hero-count">12 novas</strong> oportunidades para você hoje.</p> 
+                         </div> 
+                         <div class="hero-image">✨</div> 
+                     </div> 
+                 </section> 
+  
+                 <nav class="category-filters"> 
+                     <button class="cat-chip active" data-filter="todas">Tudo</button> 
+                     <button class="cat-chip" data-filter="cursos">Cursos</button> 
+                     <button class="cat-chip" data-filter="eventos">Eventos</button> 
+                     <button class="cat-chip" data-filter="vagas">Vagas</button> 
+                     <button class="cat-chip" data-filter="workshops">Workshops</button> 
+                 </nav> 
+  
+                 <div class="section-title"> 
+                     <h3>Explorar Oportunidades</h3> 
+                     <span class="view-all">Ver todas</span> 
+                 </div> 
  
-                <div class="settings-group">
-                    <button class="settings-row">
-                        <span class="row-icon">👤</span>
-                        <span class="row-text">Editar Perfil</span>
-                        <span class="row-arrow">›</span>
-                    </button>
-                    <button class="settings-row">
-                        <span class="row-icon">📊</span>
-                        <span class="row-text">Meu Progresso</span>
-                        <span class="row-arrow">›</span>
-                    </button>
-                    <button class="settings-row">
-                        <span class="row-icon">🛡️</span>
-                        <span class="row-text">Segurança</span>
-                        <span class="row-arrow">›</span>
-                    </button>
-                </div>
-
-                <button class="logout-btn">Sair da Conta</button> 
-            </div> 
-        </template> 
-
-        <!-- Fullscreen Detail View Container (Hidden initially) -->
-        <div id="detail-view" class="detail-overlay">
-            <div id="detail-content"></div>
-        </div>
-
-        <!-- Detail Page Template -->
-        <template id="detail-page-template">
-            <div class="detail-page">
-                <div class="detail-header-img">
-                    <img id="d-image" src="" alt="">
-                    <button class="detail-back-btn">✕</button>
-                    <div class="detail-tag" id="d-tag"></div>
-                </div>
-                <div class="detail-body">
-                    <h2 id="d-title"></h2>
-                    <div class="d-meta">
-                        <div class="meta-item">
-                            <span class="m-icon">📅</span>
-                            <div class="m-text">
-                                <span id="d-date"></span>
-                                <small id="d-time"></small>
-                            </div>
-                        </div>
-                        <div class="meta-item">
-                            <span class="m-icon">📍</span>
-                            <div class="m-text">
-                                <span id="d-location"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="d-description">
-                        <h3>Sobre</h3>
-                        <p id="d-desc"></p>
-                    </div>
-
-                    <div class="d-institution">
-                        <div class="inst-logo">🏛️</div>
-                        <div class="inst-details">
-                            <h4 id="d-inst-name"></h4>
-                            <p id="d-inst-desc"></p>
-                        </div>
-                    </div>
-                </div>
-                <footer class="detail-footer">
-                    <button class="btn-save-toggle" id="d-save-btn">Salvar</button>
-                    <button class="btn-action-primary" id="d-enroll-btn">Quero me inscrever</button>
-                </footer>
-            </div>
-        </template>
-    </div> 
-    <script src="script.js"></script> 
-</body> 
-</html>
+                 <section class="opportunities-grid" id="opportunities-list"> 
+                 </section> 
+             </div> 
+         </template> 
+  
+         <!-- Saved Template --> 
+         <template id="saved-template"> 
+             <div class="view view-saved"> 
+                 <header class="view-header"> 
+                     <h2>Meus Itens Salvos</h2> 
+                     <p>Continue de onde você parou</p> 
+                 </header> 
+                 <section id="saved-list" class="opportunities-grid"> 
+                 </section> 
+             </div> 
+         </template> 
+ 
+         <!-- Profile Template --> 
+         <template id="profile-template"> 
+             <div class="view view-profile"> 
+                 <div class="profile-hero"> 
+                     <div class="profile-avatar-wrapper"> 
+                         <div class="avatar-gradient"></div> 
+                         <div class="avatar-content">👤</div> 
+                     </div> 
+                     <h2>Seu Nome</h2> 
+                     <p>Estudante de Tecnologia</p> 
+                     <div class="profile-stats"> 
+                         <div class="stat-item"> 
+                             <span class="stat-value">5</span> 
+                             <span class="stat-label">Inscritos</span> 
+                         </div> 
+                         <div class="stat-divider"></div> 
+                         <div class="stat-item"> 
+                             <span class="stat-value" id="profile-saved-count">0</span> 
+                             <span class="stat-label">Salvos</span> 
+                         </div> 
+                     </div> 
+                 </div> 
+  
+                 <div class="settings-group"> 
+                     <button class="settings-row"> 
+                         <span class="row-icon">👤</span> 
+                         <span class="row-text">Editar Perfil</span> 
+                         <span class="row-arrow">›</span> 
+                     </button> 
+                     <button class="settings-row"> 
+                         <span class="row-icon">📊</span> 
+                         <span class="row-text">Meu Progresso</span> 
+                         <span class="row-arrow">›</span> 
+                     </button> 
+                     <button class="settings-row"> 
+                         <span class="row-icon">🛡️</span> 
+                         <span class="row-text">Segurança</span> 
+                         <span class="row-arrow">›</span> 
+                     </button> 
+                     <button class="settings-row"> 
+                         <span class="row-icon">🎨</span> 
+                         <span class="row-text">Preferências</span> 
+                         <span class="row-arrow">›</span> 
+                     </button> 
+                 </div> 
+ 
+                 <button class="logout-btn">Sair da Conta</button> 
+             </div> 
+         </template> 
+ 
+         <!-- Fullscreen Detail View Container (Hidden initially) --> 
+         <div id="detail-view" class="detail-overlay"> 
+             <div id="detail-content"></div> 
+         </div> 
+ 
+         <!-- Detail Page Template --> 
+         <template id="detail-page-template"> 
+             <div class="detail-page"> 
+                 <div class="detail-header-img"> 
+                     <img id="d-image" src="" alt=""> 
+                     <button class="detail-back-btn" id="d-close-btn">✕</button> 
+                     <div class="detail-tag" id="d-tag"></div> 
+                 </div> 
+                 <div class="detail-body"> 
+                     <h2 id="d-title"></h2> 
+                     <div class="d-meta"> 
+                         <div class="meta-item"> 
+                             <span class="m-icon">📅</span> 
+                             <div class="m-text"> 
+                                 <span id="d-date"></span> 
+                                 <small id="d-time"></small> 
+                             </div> 
+                         </div> 
+                         <div class="meta-item"> 
+                             <span class="m-icon">📍</span> 
+                             <div class="m-text"> 
+                                 <span id="d-location"></span> 
+                             </div> 
+                         </div> 
+                     </div> 
+ 
+                     <div class="d-description"> 
+                         <h3>Sobre</h3> 
+                         <p id="d-desc"></p> 
+                     </div> 
+ 
+                     <div class="d-institution"> 
+                         <div class="inst-logo">🏛️</div> 
+                         <div class="inst-details"> 
+                             <h4 id="d-inst-name"></h4> 
+                             <p id="d-inst-desc"></p> 
+                         </div> 
+                     </div> 
+                 </div> 
+                 <footer class="detail-footer"> 
+                     <button class="btn-save-toggle" id="d-save-btn">Salvar</button> 
+                     <button class="btn-action-primary" id="d-enroll-btn">Quero me inscrever</button> 
+                 </footer> 
+             </div> 
+         </template> 
+     </div> 
+     <script src="script.js"></script> 
+ </body> 
+ </html>
