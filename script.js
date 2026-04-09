@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const homeTemplate = document.getElementById('home-template');
     const detailsTemplate = document.getElementById('details-template');
     const profileTemplate = document.getElementById('profile-template');
+    const savedTemplate = document.getElementById('saved-template');
 
     // Mock Data
     const opportunities = [
@@ -70,6 +71,19 @@ document.addEventListener('DOMContentLoaded', () => {
             description: "Aprimore seu vocabulário profissional e ganhe confiança para reuniões e apresentações internacionais.",
             institution: "Global Languages",
             instDesc: "Especialistas em ensino de idiomas para fins profissionais com metodologia acelerada."
+        },
+        {
+            id: 6,
+            title: "Workshop de Python para Dados",
+            type: "workshops",
+            tag: "🔧 Workshop",
+            date: "12 de Junho, 2026",
+            time: "09:00 - 13:00",
+            location: "Lab de Inovação",
+            image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=60",
+            description: "Inicie sua jornada em Data Science aprendendo as bibliotecas essenciais do Python.",
+            institution: "Data Masters",
+            instDesc: "Escola focada em inteligência de dados e análise preditiva."
         }
     ];
 
@@ -81,26 +95,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Navigation
-    function showHome() {
+    function switchView(viewName) {
         content.innerHTML = '';
-        const clone = homeTemplate.content.cloneNode(true);
-        content.appendChild(clone);
+        let clone;
+
+        // Update nav active state
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.toggle('active', item.dataset.view === viewName);
+        });
+
+        if (viewName === 'home') {
+            clone = homeTemplate.content.cloneNode(true);
+            content.appendChild(clone);
+            setupFilters();
+            renderOpportunities();
+        } else if (viewName === 'saved') {
+            clone = savedTemplate.content.cloneNode(true);
+            const list = clone.querySelector('#saved-list');
+            const savedOpps = opportunities.filter(o => savedIds.includes(o.id));
+            
+            if (savedOpps.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: var(--text-sub); padding: 40px;">Nada salvo por aqui.</p>';
+            } else {
+                savedOpps.forEach(opp => list.appendChild(createOpportunityCard(opp)));
+            }
+            content.appendChild(clone);
+        } else if (viewName === 'profile') {
+            clone = profileTemplate.content.cloneNode(true);
+            content.appendChild(clone);
+            setupProfile();
+        }
         
-        setupFilters();
-        renderOpportunities();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function showDetails(id) {
         const opp = opportunities.find(o => o.id === id);
         if (!opp) return;
 
-        content.innerHTML = '';
         const clone = detailsTemplate.content.cloneNode(true);
+        const view = clone.querySelector('.view-details');
         
-        const detailsImage = clone.querySelector('#details-image');
-        detailsImage.src = opp.image;
-        detailsImage.alt = opp.title;
-
+        clone.querySelector('#details-image').src = opp.image;
         clone.querySelector('#details-title').textContent = opp.title;
         clone.querySelector('#details-tag').textContent = opp.tag;
         clone.querySelector('#details-date').textContent = opp.date;
@@ -110,89 +146,35 @@ document.addEventListener('DOMContentLoaded', () => {
         clone.querySelector('#details-inst-name').textContent = opp.institution;
         clone.querySelector('#details-inst-desc').textContent = opp.instDesc;
 
-        clone.querySelector('#back-btn').addEventListener('click', showHome);
+        clone.querySelector('#back-btn').addEventListener('click', () => {
+            view.remove();
+        });
 
         const enrollBtn = clone.querySelector('#enroll-btn');
         enrollBtn.addEventListener('click', () => {
             enrollBtn.textContent = 'Inscrito! ✅';
-            enrollBtn.style.background = 'var(--secondary)';
             enrollBtn.disabled = true;
-            
-            // Add to activity logic could go here
-            setTimeout(() => {
-                alert(`Inscrição confirmada para: ${opp.title}! Confira seu e-mail.`);
-            }, 300);
+            alert(`Inscrição confirmada para: ${opp.title}`);
         });
 
         const saveBtn = clone.querySelector('.btn-secondary');
-        const isSaved = savedIds.includes(opp.id);
-        saveBtn.textContent = isSaved ? 'Remover' : 'Salvar';
-        
+        const updateSaveBtn = () => {
+            const isSaved = savedIds.includes(opp.id);
+            saveBtn.textContent = isSaved ? 'Remover' : 'Salvar';
+        };
+        updateSaveBtn();
+
         saveBtn.addEventListener('click', () => {
             if (savedIds.includes(opp.id)) {
                 savedIds = savedIds.filter(sid => sid !== opp.id);
-                saveBtn.textContent = 'Salvar';
             } else {
                 savedIds.push(opp.id);
-                saveBtn.textContent = 'Remover';
             }
             saveState();
+            updateSaveBtn();
         });
-        
-        content.appendChild(clone);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
 
-    function showProfile() {
-        content.innerHTML = '';
-        const clone = profileTemplate.content.cloneNode(true);
-        
-        const savedList = clone.querySelector('#saved-list');
-        const savedOpps = opportunities.filter(o => savedIds.includes(o.id));
-        
-        if (savedOpps.length === 0) {
-            savedList.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 20px;">Nenhuma oportunidade salva ainda.</p>';
-        } else {
-            savedOpps.forEach(opp => {
-                const card = createOpportunityCard(opp);
-                savedList.appendChild(card);
-            });
-        }
-
-        clone.querySelector('.act-count').textContent = savedIds.length;
-
-        content.appendChild(clone);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // Search Logic
-    function setupSearch() {
-        const searchBtn = document.getElementById('search-btn');
-        searchBtn.addEventListener('click', () => {
-            const query = prompt('O que você está procurando?');
-            if (query) {
-                const results = opportunities.filter(o => 
-                    o.title.toLowerCase().includes(query.toLowerCase()) || 
-                    o.description.toLowerCase().includes(query.toLowerCase())
-                );
-                renderFilteredOpportunities(results);
-            }
-        });
-    }
-
-    function renderFilteredOpportunities(filtered) {
-        const list = document.getElementById('opportunities-list');
-        if (!list) return;
-
-        list.innerHTML = '';
-        if (filtered.length === 0) {
-            list.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">Nenhuma oportunidade encontrada.</p>';
-            return;
-        }
-
-        filtered.forEach(opp => {
-            list.appendChild(createOpportunityCard(opp));
-        });
+        document.body.appendChild(clone);
     }
 
     // Helpers
@@ -225,9 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ? opportunities 
             : opportunities.filter(o => o.type === currentFilter);
 
-        filtered.forEach(opp => {
-            list.appendChild(createOpportunityCard(opp));
-        });
+        filtered.forEach(opp => list.appendChild(createOpportunityCard(opp)));
     }
 
     function setupFilters() {
@@ -242,11 +222,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function setupProfile() {
+        // Mock profile logic
+        document.querySelector('.btn-logout').addEventListener('click', () => {
+            alert('Saindo...');
+        });
+    }
+
     // Event Listeners
-    document.getElementById('profile-btn').addEventListener('click', showProfile);
-    document.querySelector('.logo').addEventListener('click', showHome);
-    setupSearch();
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => switchView(item.dataset.view));
+    });
+
+    document.getElementById('search-btn').addEventListener('click', () => {
+        const query = prompt('O que você busca?');
+        if (query) {
+            currentFilter = 'todas';
+            switchView('home');
+            const filtered = opportunities.filter(o => 
+                o.title.toLowerCase().includes(query.toLowerCase())
+            );
+            const list = document.getElementById('opportunities-list');
+            list.innerHTML = '';
+            filtered.forEach(opp => list.appendChild(createOpportunityCard(opp)));
+        }
+    });
 
     // Initial View
-    showHome();
+    switchView('home');
 });
