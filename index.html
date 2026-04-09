@@ -14,36 +14,42 @@
          <header class="main-header"> 
              <div class="logo"> 
                  <span class="logo-icon">🎓</span> 
-                 <div class="logo-text"> 
-                     <h1>EduConecta</h1> 
-                     <p>Oportunidades para você</p> 
-                 </div> 
+                 <h1>EduConecta</h1> 
              </div> 
-             <div class="header-actions"> 
-                 <button id="search-btn" class="icon-btn">🔍</button> 
-                 <button id="profile-btn" class="icon-btn profile-icon-container"> 
-                     <span class="profile-icon">👤</span> 
-                 </button> 
-             </div> 
+             <button id="search-btn" class="icon-btn">🔍</button> 
          </header> 
          <main id="content"> 
          </main> 
+         <nav class="bottom-nav">
+             <button class="nav-item active" data-view="home">
+                 <span class="nav-icon">🏠</span>
+                 <span class="nav-label">Início</span>
+             </button>
+             <button class="nav-item" data-view="saved">
+                 <span class="nav-icon">❤️</span>
+                 <span class="nav-label">Salvos</span>
+             </button>
+             <button class="nav-item" data-view="profile">
+                 <span class="nav-icon">👤</span>
+                 <span class="nav-label">Perfil</span>
+             </button>
+         </nav>
+
          <template id="home-template"> 
              <div class="view-home"> 
                  <section class="welcome-banner"> 
                      <div class="banner-content"> 
-                         <h2>Bem vindo(a)! 🎓</h2> 
-                         <h3>Explore oportunidades gratuitas</h3> 
-                         <p>cursos, eventos e vagas perto de você</p> 
+                         <h2>Olá! 👋</h2> 
+                         <p>O que vamos aprender hoje?</p> 
                      </div> 
                  </section> 
   
                  <nav class="filters"> 
-                     <button class="filter-chip active" data-filter="todas">⭐ Todas</button> 
-                     <button class="filter-chip" data-filter="cursos">🎓 Cursos</button> 
-                     <button class="filter-chip" data-filter="eventos">📅 Eventos</button> 
-                     <button class="filter-chip" data-filter="vagas">💼 Vagas</button> 
-                     <button class="filter-chip" data-filter="workshops">🔧 Workshop</button> 
+                     <button class="filter-chip active" data-filter="todas">Tudo</button> 
+                     <button class="filter-chip" data-filter="cursos">Cursos</button> 
+                     <button class="filter-chip" data-filter="eventos">Eventos</button> 
+                     <button class="filter-chip" data-filter="vagas">Vagas</button> 
+                     <button class="filter-chip" data-filter="workshops">Workshops</button> 
                  </nav> 
   
                  <section class="opportunities-list" id="opportunities-list"> 
@@ -51,93 +57,54 @@
              </div> 
          </template> 
   
-         <template id="details-template"> 
-             <div class="view-details"> 
-                 <div class="details-header"> 
-                     <button id="back-btn" class="back-btn">←</button> 
-                     <img id="details-image" src="" alt="Oportunidade"> 
-                     <span id="details-tag" class="tag"></span> 
-                 </div> 
-                 <div class="details-content"> 
-                     <h2 id="details-title"></h2> 
-                      
-                     <div class="details-info"> 
-                         <div class="info-item"> 
-                             <span class="info-icon">📅</span> 
-                             <div class="info-text"> 
-                                 <p id="details-date"></p> 
-                                 <p id="details-time" class="sub-text"></p> 
-                             </div> 
-                         </div> 
-                         <div class="info-item"> 
-                             <span class="info-icon">📍</span> 
-                             <div class="info-text"> 
-                                 <p id="details-location"></p> 
-                                 <a href="#" class="map-link">Ver no mapa 🗺️</a> 
-                             </div> 
-                         </div> 
-                     </div> 
-  
-                     <div class="details-description"> 
-                         <h3>Sobre esta oportunidade</h3> 
-                         <p id="details-text"></p> 
-                     </div> 
-  
-                     <div class="institution-card"> 
-                         <div class="inst-icon">🏛️</div> 
-                         <div class="inst-info"> 
-                             <h4 id="details-inst-name"></h4> 
-                             <p>Instituição ofertante</p> 
-                         </div> 
-                         <p id="details-inst-desc" class="inst-desc"></p> 
-                     </div> 
-                 </div> 
-                 <footer class="details-footer"> 
-                     <button class="btn-secondary">Salvar</button> 
-                     <button id="enroll-btn" class="btn-primary">Inscrever-se</button> 
-                 </footer> 
-             </div> 
-         </template> 
-  
+         <template id="saved-template">
+             <div class="view-saved">
+                 <header class="view-header">
+                     <h2>Salvos</h2>
+                 </header>
+                 <section id="saved-list" class="opportunities-list">
+                 </section>
+             </div>
+         </template>
+
          <template id="profile-template"> 
              <div class="view-profile"> 
-                 <div class="profile-header"> 
+                 <header class="view-header">
+                     <h2>Meu Perfil</h2>
+                 </header>
+                 <div class="profile-card"> 
                      <div class="profile-avatar">👤</div> 
-                     <h2>Usuário</h2> 
-                     <p>user@gmail.com</p> 
-                     <button class="btn-edit-profile">✏️ Editar perfil</button> 
+                     <div class="profile-info">
+                         <h3>Usuário</h3> 
+                         <p>user@gmail.com</p> 
+                     </div>
+                     <button class="btn-edit-profile">✏️</button> 
                  </div> 
   
                  <section class="activity-section"> 
-                     <h3>SUA ATIVIDADE</h3> 
                      <div class="activity-grid"> 
-                         <div class="activity-card activity-saved"> 
-                             <span class="act-icon">❤️</span> 
-                             <span class="act-count">1</span> 
-                             <span class="act-label">Salvos</span> 
-                         </div> 
-                         <div class="activity-card activity-viewed"> 
-                             <span class="act-icon">👁️</span> 
-                             <span class="act-count">1</span> 
-                             <span class="act-label">Visualizados</span> 
-                         </div> 
-                         <div class="activity-card activity-enrolled"> 
-                             <span class="act-icon">✅</span> 
+                         <div class="activity-card"> 
                              <span class="act-count">1</span> 
                              <span class="act-label">Inscritos</span> 
                          </div> 
+                         <div class="activity-card"> 
+                             <span class="act-count">1</span> 
+                             <span class="act-label">Salvos</span> 
+                         </div> 
+                         <div class="activity-card"> 
+                             <span class="act-count">12</span> 
+                             <span class="act-label">Vistos</span> 
+                         </div> 
                      </div> 
                  </section> 
   
-                 <section class="saved-opportunities"> 
-                     <h3>Oportunidades Salvas</h3> 
-                     <div id="saved-list" class="opportunities-list"> 
-                     </div> 
-                 </section> 
-  
-                 <button class="btn-logout"> 
-                     <span>🚪</span> Sair da conta 
-                 </button> 
+                 <div class="settings-list">
+                     <button class="settings-item"><span>🔔</span> Notificações</button>
+                     <button class="settings-item"><span>🛠️</span> Preferências</button>
+                     <button class="settings-item"><span>❓</span> Ajuda</button>
+                 </div>
+
+                 <button class="btn-logout">Sair da conta</button> 
              </div> 
          </template> 
      </div> 
