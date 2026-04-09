@@ -1,18 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Configuration & Elements ---
     const content = document.getElementById('content');
     const homeTemplate = document.getElementById('home-template');
-    const detailsTemplate = document.getElementById('details-template');
-    const profileTemplate = document.getElementById('profile-template');
     const savedTemplate = document.getElementById('saved-template');
+    const profileTemplate = document.getElementById('profile-template');
+    const detailView = document.getElementById('detail-view');
+    const detailContent = document.getElementById('detail-content');
+    const detailPageTemplate = document.getElementById('detail-page-template');
+    
+    const searchBar = document.getElementById('search-bar');
+    const searchInput = document.getElementById('search-input');
+    const searchTrigger = document.getElementById('search-trigger');
+    const searchClose = document.getElementById('search-close');
+    const tabItems = document.querySelectorAll('.tab-item');
+    const navIndicator = document.querySelector('.nav-indicator');
 
-    // Mock Data
+    // --- State Management ---
     const opportunities = [
         {
             id: 1,
             title: "Introdução ao React & Next.js",
             type: "cursos",
             tag: "🎓 Curso",
-            date: "15 de Abril, 2026",
+            date: "15 Abr, 2026",
             time: "19:00 - 21:00",
             location: "Online via Zoom",
             image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&auto=format&fit=crop&q=60",
@@ -21,24 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
             instDesc: "Uma instituição dedicada a formar novos talentos na área de tecnologia com cursos práticos e gratuitos."
         },
         {
-            id: 2,
-            title: "Workshop de Design UX/UI",
-            type: "workshops",
-            tag: "🔧 Workshop",
-            date: "22 de Abril, 2026",
-            time: "14:00 - 18:00",
-            location: "Espaço Co-working, Centro",
-            image: "https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?w=800&auto=format&fit=crop&q=60",
-            description: "Um workshop prático focado em princípios de design, prototipagem e testes de usabilidade para quem quer entrar no mundo do design de produtos digitais.",
-            institution: "Design Hub",
-            instDesc: "Comunidade de designers focada em compartilhar conhecimento e fomentar a inovação no Brasil."
-        },
-        {
             id: 3,
             title: "Desenvolvedor Front-end Júnior",
             type: "vagas",
             tag: "💼 Vaga",
-            date: "Inscrições até 30 de Abril",
+            date: "Até 30 Abr",
             time: "Horário Comercial",
             location: "Remoto ou Híbrido (SP)",
             image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=60",
@@ -51,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             title: "Feira de Profissões 2026",
             type: "eventos",
             tag: "📅 Evento",
-            date: "05 de Maio, 2026",
+            date: "05 Mai, 2026",
             time: "09:00 - 17:00",
             location: "Centro de Convenções",
             image: "https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?w=800&auto=format&fit=crop&q=60",
@@ -64,9 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
             title: "Curso de Inglês para Negócios",
             type: "cursos",
             tag: "🎓 Curso",
-            date: "Toda Terça e Quinta",
+            date: "Ter e Qui",
             time: "18:30 - 20:00",
-            location: "Escola de Idiomas Global",
+            location: "Escola Global",
             image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&auto=format&fit=crop&q=60",
             description: "Aprimore seu vocabulário profissional e ganhe confiança para reuniões e apresentações internacionais.",
             institution: "Global Languages",
@@ -77,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             title: "Workshop de Python para Dados",
             type: "workshops",
             tag: "🔧 Workshop",
-            date: "12 de Junho, 2026",
+            date: "12 Jun, 2026",
             time: "09:00 - 13:00",
             location: "Lab de Inovação",
             image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=60",
@@ -87,167 +84,204 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     ];
 
+    let currentView = 'home';
     let currentFilter = 'todas';
-    let savedIds = JSON.parse(localStorage.getItem('savedIds')) || [1];
+    let savedIds = JSON.parse(localStorage.getItem('educonecta_saved')) || [];
 
-    function saveState() {
-        localStorage.setItem('savedIds', JSON.stringify(savedIds));
+    // --- Core Functions ---
+
+    function updateNavIndicator() {
+        const activeTab = document.querySelector('.tab-item.active');
+        if (activeTab && navIndicator) {
+            const rect = activeTab.getBoundingClientRect();
+            const parentRect = activeTab.parentElement.getBoundingClientRect();
+            navIndicator.style.width = `${rect.width * 0.4}px`;
+            navIndicator.style.left = `${rect.left - parentRect.left + (rect.width * 0.3)}px`;
+        }
     }
 
-    // Navigation
     function switchView(viewName) {
+        currentView = viewName;
         content.innerHTML = '';
-        let clone;
-
-        // Update nav active state
-        document.querySelectorAll('.nav-item').forEach(item => {
+        
+        tabItems.forEach(item => {
             item.classList.toggle('active', item.dataset.view === viewName);
         });
+        updateNavIndicator();
 
+        let clone;
         if (viewName === 'home') {
             clone = homeTemplate.content.cloneNode(true);
             content.appendChild(clone);
-            setupFilters();
-            renderOpportunities();
+            setupHomeView();
         } else if (viewName === 'saved') {
             clone = savedTemplate.content.cloneNode(true);
-            const list = clone.querySelector('#saved-list');
-            const savedOpps = opportunities.filter(o => savedIds.includes(o.id));
-            
-            if (savedOpps.length === 0) {
-                list.innerHTML = '<p style="text-align: center; color: var(--text-sub); padding: 40px;">Nada salvo por aqui.</p>';
-            } else {
-                savedOpps.forEach(opp => list.appendChild(createOpportunityCard(opp)));
-            }
             content.appendChild(clone);
+            renderSavedList();
         } else if (viewName === 'profile') {
             clone = profileTemplate.content.cloneNode(true);
             content.appendChild(clone);
-            setupProfile();
+            setupProfileView();
         }
-        
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function showDetails(id) {
-        const opp = opportunities.find(o => o.id === id);
-        if (!opp) return;
-
-        const clone = detailsTemplate.content.cloneNode(true);
-        const view = clone.querySelector('.view-details');
-        
-        clone.querySelector('#details-image').src = opp.image;
-        clone.querySelector('#details-title').textContent = opp.title;
-        clone.querySelector('#details-tag').textContent = opp.tag;
-        clone.querySelector('#details-date').textContent = opp.date;
-        clone.querySelector('#details-time').textContent = opp.time;
-        clone.querySelector('#details-location').textContent = opp.location;
-        clone.querySelector('#details-text').textContent = opp.description;
-        clone.querySelector('#details-inst-name').textContent = opp.institution;
-        clone.querySelector('#details-inst-desc').textContent = opp.instDesc;
-
-        clone.querySelector('#back-btn').addEventListener('click', () => {
-            view.remove();
+    function setupHomeView() {
+        // Filter Chips Logic
+        const chips = document.querySelectorAll('.cat-chip');
+        chips.forEach(chip => {
+            chip.classList.toggle('active', chip.dataset.filter === currentFilter);
+            chip.addEventListener('click', () => {
+                chips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentFilter = chip.dataset.filter;
+                renderOpportunitiesList();
+            });
         });
-
-        const enrollBtn = clone.querySelector('#enroll-btn');
-        enrollBtn.addEventListener('click', () => {
-            enrollBtn.textContent = 'Inscrito! ✅';
-            enrollBtn.disabled = true;
-            alert(`Inscrição confirmada para: ${opp.title}`);
-        });
-
-        const saveBtn = clone.querySelector('.btn-secondary');
-        const updateSaveBtn = () => {
-            const isSaved = savedIds.includes(opp.id);
-            saveBtn.textContent = isSaved ? 'Remover' : 'Salvar';
-        };
-        updateSaveBtn();
-
-        saveBtn.addEventListener('click', () => {
-            if (savedIds.includes(opp.id)) {
-                savedIds = savedIds.filter(sid => sid !== opp.id);
-            } else {
-                savedIds.push(opp.id);
-            }
-            saveState();
-            updateSaveBtn();
-        });
-
-        document.body.appendChild(clone);
+        renderOpportunitiesList();
     }
 
-    // Helpers
-    function createOpportunityCard(opp) {
-        const card = document.createElement('div');
-        card.className = 'opportunity-card';
-        card.innerHTML = `
-            <div class="card-image-container">
-                <img src="${opp.image}" alt="${opp.title}">
-                <span class="card-tag">${opp.tag}</span>
-            </div>
-            <div class="card-content">
-                <h3>${opp.title}</h3>
-                <div class="card-info">
-                    <span>📅 ${opp.date}</span>
-                    <span>📍 ${opp.location}</span>
-                </div>
-            </div>
-        `;
-        card.addEventListener('click', () => showDetails(opp.id));
-        return card;
-    }
-
-    function renderOpportunities() {
+    function renderOpportunitiesList(filteredItems = null) {
         const list = document.getElementById('opportunities-list');
         if (!list) return;
 
         list.innerHTML = '';
-        const filtered = currentFilter === 'todas' 
+        const items = filteredItems || (currentFilter === 'todas' 
             ? opportunities 
-            : opportunities.filter(o => o.type === currentFilter);
+            : opportunities.filter(o => o.type === currentFilter));
 
-        filtered.forEach(opp => list.appendChild(createOpportunityCard(opp)));
-    }
-
-    function setupFilters() {
-        const filters = document.querySelectorAll('.filter-chip');
-        filters.forEach(chip => {
-            chip.addEventListener('click', () => {
-                filters.forEach(c => c.classList.remove('active'));
-                chip.classList.add('active');
-                currentFilter = chip.dataset.filter;
-                renderOpportunities();
-            });
-        });
-    }
-
-    function setupProfile() {
-        // Mock profile logic
-        document.querySelector('.btn-logout').addEventListener('click', () => {
-            alert('Saindo...');
-        });
-    }
-
-    // Event Listeners
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', () => switchView(item.dataset.view));
-    });
-
-    document.getElementById('search-btn').addEventListener('click', () => {
-        const query = prompt('O que você busca?');
-        if (query) {
-            currentFilter = 'todas';
-            switchView('home');
-            const filtered = opportunities.filter(o => 
-                o.title.toLowerCase().includes(query.toLowerCase())
-            );
-            const list = document.getElementById('opportunities-list');
-            list.innerHTML = '';
-            filtered.forEach(opp => list.appendChild(createOpportunityCard(opp)));
+        if (items.length === 0) {
+            list.innerHTML = `<div class="empty-state">Nenhum resultado encontrado.</div>`;
+            return;
         }
+
+        items.forEach((opp, index) => {
+            const card = createCard(opp);
+            card.style.animationDelay = `${index * 0.1}s`;
+            list.appendChild(card);
+        });
+    }
+
+    function renderSavedList() {
+        const list = document.getElementById('saved-list');
+        if (!list) return;
+
+        const savedItems = opportunities.filter(o => savedIds.includes(o.id));
+        if (savedItems.length === 0) {
+            list.innerHTML = `<div class="empty-state">Você ainda não salvou nada.</div>`;
+            return;
+        }
+
+        savedItems.forEach(opp => list.appendChild(createCard(opp)));
+    }
+
+    function createCard(opp) {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <div class="card-img-wrap">
+                <img src="${opp.image}" alt="${opp.title}" loading="lazy">
+                <div class="card-badge">${opp.tag}</div>
+            </div>
+            <div class="card-body">
+                <h4>${opp.title}</h4>
+                <div class="card-meta">
+                    <span>📅 ${opp.date} • ${opp.time}</span>
+                    <span>📍 ${opp.location}</span>
+                </div>
+            </div>
+        `;
+        card.addEventListener('click', () => openDetail(opp));
+        return card;
+    }
+
+    function openDetail(opp) {
+        detailContent.innerHTML = '';
+        const clone = detailPageTemplate.content.cloneNode(true);
+        
+        clone.querySelector('#d-image').src = opp.image;
+        clone.querySelector('#d-title').textContent = opp.title;
+        clone.querySelector('#d-tag').textContent = opp.tag;
+        clone.querySelector('#d-date').textContent = opp.date;
+        clone.querySelector('#d-time').textContent = opp.time;
+        clone.querySelector('#d-location').textContent = opp.location;
+        clone.querySelector('#d-desc').textContent = opp.description;
+        clone.querySelector('#d-inst-name').textContent = opp.institution;
+        clone.querySelector('#d-inst-desc').textContent = opp.instDesc;
+
+        const backBtn = clone.querySelector('.detail-back-btn');
+        backBtn.addEventListener('click', () => detailView.classList.remove('active'));
+
+        const saveBtn = clone.querySelector('#d-save-btn');
+        const updateSaveUI = () => {
+            const isSaved = savedIds.includes(opp.id);
+            saveBtn.textContent = isSaved ? 'Remover' : 'Salvar';
+            saveBtn.style.background = isSaved ? '#f1f5f9' : 'white';
+        };
+        updateSaveUI();
+
+        saveBtn.addEventListener('click', () => {
+            if (savedIds.includes(opp.id)) {
+                savedIds = savedIds.filter(id => id !== opp.id);
+            } else {
+                savedIds.push(opp.id);
+            }
+            localStorage.setItem('educonecta_saved', JSON.stringify(savedIds));
+            updateSaveUI();
+        });
+
+        const enrollBtn = clone.querySelector('#d-enroll-btn');
+        enrollBtn.addEventListener('click', () => {
+            enrollBtn.textContent = 'Inscrito com Sucesso! ✅';
+            enrollBtn.style.background = '#10b981';
+            enrollBtn.disabled = true;
+            setTimeout(() => alert('Parabéns! Sua inscrição foi enviada para ' + opp.institution), 500);
+        });
+
+        detailContent.appendChild(clone);
+        detailView.classList.add('active');
+    }
+
+    function setupProfileView() {
+        document.getElementById('profile-saved-count').textContent = savedIds.length;
+        document.querySelector('.logout-btn').addEventListener('click', () => {
+            if(confirm('Deseja realmente sair?')) location.reload();
+        });
+    }
+
+    // --- Search Logic ---
+
+    function toggleSearch() {
+        searchBar.classList.toggle('active');
+        if (searchBar.classList.contains('active')) {
+            searchInput.focus();
+        }
+    }
+
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        if (currentView !== 'home') switchView('home');
+        
+        const filtered = opportunities.filter(o => 
+            o.title.toLowerCase().includes(query) || 
+            o.description.toLowerCase().includes(query)
+        );
+        renderOpportunitiesList(filtered);
     });
 
-    // Initial View
+    // --- Event Listeners ---
+
+    searchTrigger.addEventListener('click', toggleSearch);
+    searchClose.addEventListener('click', () => {
+        toggleSearch();
+        searchInput.value = '';
+        renderOpportunitiesList();
+    });
+
+    tabItems.forEach(tab => {
+        tab.addEventListener('click', () => switchView(tab.dataset.view));
+    });
+
+    // Initial load
     switchView('home');
+    window.addEventListener('resize', updateNavIndicator);
 });
