@@ -1,8 +1,3 @@
-/**
- * EduConecta - Premium Learning Application Logic
- */
-
-// --- Data Model ---
 const opportunities = [
     {
         id: 2,
@@ -76,13 +71,11 @@ const opportunities = [
     }
 ];
 
-// --- State Management ---
 let currentView = 'home';
 let currentFilter = 'todas';
 let searchQuery = '';
 let savedIds = JSON.parse(localStorage.getItem('educonecta_saved')) || [];
 
-// --- Selectors ---
 const appContent = document.getElementById('content');
 const tabButtons = document.querySelectorAll('.tab-item');
 const navIndicator = document.querySelector('.nav-indicator');
@@ -92,7 +85,6 @@ const searchClose = document.getElementById('search-close');
 const searchInput = document.getElementById('search-input');
 const detailOverlay = document.getElementById('detail-view');
 
-// --- Initialization ---
 function init() {
     renderView('home');
     setupNavigation();
@@ -100,7 +92,6 @@ function init() {
     updateSavedCount();
 }
 
-// --- Navigation Logic ---
 function setupNavigation() {
     tabButtons.forEach((btn, index) => {
         btn.addEventListener('click', () => {
@@ -129,7 +120,6 @@ function renderView(viewName) {
     const clone = template.content.cloneNode(true);
     appContent.appendChild(clone);
 
-    // View-specific setup
     if (viewName === 'home') {
         setupHomeView();
     } else if (viewName === 'saved') {
@@ -139,7 +129,6 @@ function renderView(viewName) {
     }
 }
 
-// --- Home View Logic ---
 function setupHomeView() {
     const filterButtons = document.querySelectorAll('.cat-chip');
     filterButtons.forEach(btn => {
@@ -165,7 +154,6 @@ function renderOpportunities() {
         return matchesFilter && matchesSearch;
     });
 
-    // Update Hero Count if in home
     const heroCount = document.getElementById('hero-count');
     if (heroCount) heroCount.textContent = `${filtered.length} novas`;
 
@@ -205,7 +193,6 @@ function renderOpportunities() {
     });
 }
 
-// --- Saved View Logic ---
 function setupSavedView() {
     const savedList = document.getElementById('saved-list');
     if (!savedList) return;
@@ -250,7 +237,6 @@ function setupSavedView() {
     });
 }
 
-// --- Profile View Logic ---
 function setupProfileView() {
     const savedCount = document.getElementById('profile-saved-count');
     if (savedCount) savedCount.textContent = savedIds.length;
@@ -263,7 +249,6 @@ function setupProfileView() {
     }
 }
 
-// --- Detail View Logic ---
 function openDetail(item) {
     const template = document.getElementById('detail-page-template');
     const content = document.getElementById('detail-content');
@@ -290,7 +275,6 @@ function openDetail(item) {
     saveBtn.addEventListener('click', () => {
         const newState = toggleSave(item.id);
         updateDetailSaveBtn(saveBtn, newState);
-        // If we are in Saved view, we might want to refresh it when overlay closes
     });
 
     document.getElementById('d-close-btn').addEventListener('click', closeDetail);
@@ -303,7 +287,6 @@ function openDetail(item) {
 
 function closeDetail() {
     detailOverlay.classList.remove('active');
-    // Refresh current view in case something changed (like saved state)
     renderView(currentView);
 }
 
@@ -312,7 +295,6 @@ function updateDetailSaveBtn(btn, isSaved) {
     btn.classList.toggle('saved', isSaved);
 }
 
-// --- Search Logic ---
 function setupSearch() {
     searchTrigger.addEventListener('click', () => {
         searchBar.classList.add('active');
@@ -332,7 +314,6 @@ function setupSearch() {
     });
 }
 
-// --- Helper Functions ---
 function toggleSave(id) {
     const index = savedIds.indexOf(id);
     let isSavedNow = false;
@@ -351,8 +332,6 @@ function toggleSave(id) {
 }
 
 function updateSavedCount() {
-    // This could be used for global badges if needed
 }
 
-// Start the app
 init();
